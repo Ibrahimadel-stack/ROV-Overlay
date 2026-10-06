@@ -1,0 +1,974 @@
+{
+  "profile_name": "Intervention",
+  "client": "",
+  "job_type": "Intervention",
+  "vessel": "",
+  "rov": "",
+  "contractor": "DEEPTECH",
+  "resolution": [
+    1280,
+    1024
+  ],
+  "serial": {
+    "port": "COM5",
+    "baud": 9600,
+    "formats": [
+      {
+        "name": "Imported",
+        "prefix": "$NAV",
+        "delimiter": ",",
+        "field_map": [
+          "PREFIX",
+          "IGNORE",
+          "EAST",
+          "NORTH",
+          "KP",
+          "HEADING",
+          "DCC",
+          "ALTITUDE",
+          "DEPTH",
+          "CP"
+        ],
+        "raw_format": "$NAV,IGNORE,EAST,NORTH,KP,HEADING,DCC,ALTITUDE,DEPTH,CP"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "name": "DATE",
+      "type": "date",
+      "value": "d",
+      "label": "Date\\Time",
+      "label_position": "none",
+      "x": 1050,
+      "y": 20,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        0,
+        0,
+        0
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        90,
+        160
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "612a52ef"
+    },
+    {
+      "name": "TIME",
+      "type": "time",
+      "value": "t",
+      "label": "Time",
+      "label_position": "none",
+      "x": 1050,
+      "y": 70,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "016ba763"
+    },
+    {
+      "name": "IMAGE1",
+      "type": "image",
+      "value": "C:\\Q24 Automation\\Overlay\\Logo\\PhPC.jpg",
+      "label": "Client",
+      "label_position": "none",
+      "x": 1218,
+      "y": 0,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 124,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "PhPC.jpg",
+      "width": 123,
+      "height": 124,
+      "id": "6e526d0f"
+    },
+    {
+      "name": "IMAGE2",
+      "type": "image",
+      "value": "C:\\Q24 Automation\\Overlay\\Logo\\DeepTech_Logo.jpg",
+      "label": "Contractor",
+      "label_position": "none",
+      "x": 123,
+      "y": 40,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 68,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "DeepTech_Logo.jpg",
+      "width": 247,
+      "height": 68,
+      "id": "19ff69da"
+    },
+    {
+      "name": "EAST",
+      "type": "serial_data",
+      "value": "#0.00",
+      "label": "East",
+      "label_position": "left",
+      "x": 1180,
+      "y": 870,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "EAST",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "1886af7d"
+    },
+    {
+      "name": "NORTH",
+      "type": "serial_data",
+      "value": "#0.00",
+      "label": "North",
+      "label_position": "left",
+      "x": 100,
+      "y": 870,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "NORTH",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "d0750603"
+    },
+    {
+      "name": "KP",
+      "type": "serial_data",
+      "value": "#0.000",
+      "label": "KP",
+      "label_position": "left",
+      "x": 640,
+      "y": 870,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 24,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "KP",
+      "format_string": "#0.000",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "9f19c310"
+    },
+    {
+      "name": "HEADING",
+      "type": "serial_data",
+      "value": "#0.00",
+      "label": "Heading",
+      "label_position": "left",
+      "x": 640,
+      "y": 970,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "HEADING",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "78f6bd90"
+    },
+    {
+      "name": "DEPTH",
+      "type": "serial_data",
+      "value": "#0.00",
+      "label": "Depth",
+      "label_position": "left",
+      "x": 100,
+      "y": 970,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "DEPTH",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "69889bfc"
+    },
+    {
+      "name": "ALT",
+      "type": "serial_data",
+      "value": "#0.00",
+      "label": "Altitude",
+      "label_position": "left",
+      "x": 1180,
+      "y": 970,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        0,
+        90,
+        160
+      ],
+      "serial_field": "ALTITUDE",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "87728c12"
+    },
+    {
+      "name": "PITCH",
+      "type": "serial_data",
+      "value": "#.00",
+      "label": "Pitch",
+      "label_position": "none",
+      "x": 880,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": true,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "PITCH",
+      "format_string": "#.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "dcac57ca"
+    },
+    {
+      "name": "ROLL",
+      "type": "serial_data",
+      "value": "#.00",
+      "label": "ROLL",
+      "label_position": "none",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "ROLL",
+      "format_string": "#.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "8f893d5c"
+    },
+    {
+      "name": "CP",
+      "type": "serial_data",
+      "value": "#0.0000V",
+      "label": "CP",
+      "label_position": "left",
+      "x": 580,
+      "y": 860,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": true,
+      "bg_color": [
+        0,
+        0,
+        0
+      ],
+      "serial_field": "CP",
+      "format_string": "#0.0000V",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "c95c551a"
+    },
+    {
+      "name": "DCC",
+      "type": "serial_data",
+      "value": "#.000",
+      "label": "DCC",
+      "label_position": "none",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "DCC",
+      "format_string": "#.000",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "0a1d56a2"
+    },
+    {
+      "name": "LAT",
+      "type": "serial_data",
+      "value": "32.321569",
+      "label": "LAT",
+      "label_position": "none",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "LAT",
+      "format_string": "32.321569",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "55d934d5"
+    },
+    {
+      "name": "LONG",
+      "type": "serial_data",
+      "value": "32.321569",
+      "label": "LONG",
+      "label_position": "none",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "LONG",
+      "format_string": "32.321569",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "17a68fa9"
+    },
+    {
+      "name": "CUSTOM1",
+      "type": "static_text",
+      "value": "ATOLL-1",
+      "label": "Location",
+      "label_position": "none",
+      "x": 640,
+      "y": 20,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 24,
+      "font_color": [
+        255,
+        255,
+        255
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "f170a7ed"
+    },
+    {
+      "name": "CUSTOM2",
+      "type": "static_text",
+      "value": "EFL TROUBLESHOOTING",
+      "label": "",
+      "label_position": "none",
+      "x": 640,
+      "y": 60,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 24,
+      "font_color": [
+        255,
+        255,
+        255
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "a62b4d2b"
+    },
+    {
+      "name": "CUSTOM3",
+      "type": "static_text",
+      "value": "Dive 2588",
+      "label": "",
+      "label_position": "none",
+      "x": 640,
+      "y": 100,
+      "visible": true,
+      "font_name": "Arial",
+      "font_size": 24,
+      "font_color": [
+        255,
+        255,
+        255
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "fa7cd402"
+    },
+    {
+      "name": "CUSTOM4",
+      "type": "static_text",
+      "value": "",
+      "label": "",
+      "label_position": "none",
+      "x": 650,
+      "y": 820,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        255
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": true,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "2621c849"
+    },
+    {
+      "name": "CUSTOM5",
+      "type": "static_text",
+      "value": "2738",
+      "label": "",
+      "label_position": "left",
+      "x": 640,
+      "y": 870,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 26,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "643f3a04"
+    },
+    {
+      "name": "CUSTOM6",
+      "type": "static_text",
+      "value": "c",
+      "label": "",
+      "label_position": "right",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "1e529d2f"
+    },
+    {
+      "name": "CUSTOM7",
+      "type": "static_text",
+      "value": "c",
+      "label": "",
+      "label_position": "above",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "8a004a6e"
+    },
+    {
+      "name": "CUSTOM8",
+      "type": "static_text",
+      "value": "c",
+      "label": "",
+      "label_position": "below",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "a02b77c6"
+    },
+    {
+      "name": "CUSTOM9",
+      "type": "static_text",
+      "value": "c",
+      "label": "",
+      "label_position": "left",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "54dfde9e"
+    },
+    {
+      "name": "CUSTOM10",
+      "type": "static_text",
+      "value": "c",
+      "label": "",
+      "label_position": "right",
+      "x": 610,
+      "y": 680,
+      "visible": false,
+      "font_name": "Arial",
+      "font_size": 16,
+      "font_color": [
+        255,
+        255,
+        0
+      ],
+      "bold": true,
+      "label_font_size": 16,
+      "label_color": [
+        255,
+        255,
+        255
+      ],
+      "bg_enabled": false,
+      "bg_color": [
+        255,
+        255,
+        255
+      ],
+      "serial_field": "",
+      "format_string": "#0.00",
+      "image_path": "",
+      "width": 150,
+      "height": 80,
+      "id": "6b34a691"
+    }
+  ]
+}
