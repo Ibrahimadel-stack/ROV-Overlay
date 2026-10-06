@@ -6,12 +6,14 @@ from typing import Dict, List, Optional
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QGuiApplication
 from PyQt6.QtWidgets import (
-    QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QStatusBar,
+    QMainWindow, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QStatusBar, QComboBox, QPushButton, QFrame,
 )
 
 from .models import Profile, SerialStringFormat
 from .overlay_window import OverlayWindow
 from .serial_reader import SerialReader
+from .video_capture import detect_devices
 from .tabs.editor_tab import EditorTab
 from .tabs.profiles_tab import ProfilesTab
 from .tabs.serial_tab import SerialTab
@@ -40,7 +42,15 @@ class ControlWindow(QMainWindow):
         self.tabs.addTab(self.profiles_tab, "\U0001F4C1  Profiles")
         self.tabs.addTab(self.serial_tab, "\U0001F4E1  Serial Settings")
         self.tabs.addTab(self.logo_tab, "\U0001F5BC  Logo Manager")
-        self.setCentralWidget(self.tabs)
+
+        # Central widget: video-source bar on top + the tabs below.
+        central = QWidget()
+        clayout = QVBoxLayout(central)
+        clayout.setContentsMargins(0, 0, 0, 0)
+        clayout.setSpacing(0)
+        clayout.addWidget(self._build_video_bar())
+        clayout.addWidget(self.tabs, 1)
+        self.setCentralWidget(central)
 
         self.setStatusBar(QStatusBar())
         self.statusBar().showMessage("Ready")
@@ -51,6 +61,96 @@ class ControlWindow(QMainWindow):
         self._tick = QTimer(self)
         self._tick.timeout.connect(self._push_values)
         self._tick.start(100)
+
+    # ------------------------------------------------------------------
+    # Video source bar
+    # ------------------------------------------------------------------
+    def _build_video_bar(self) -> QWidget:
+        bar = QFrame()
+        bar.setObjectName("video_bar")
+        bar.setStyleSheet(
+            "#video_bar { background:#0e1630; border-bottom:1px solid #0f3460; }")
+        lay = QHBoxLayout(bar)
+        lay.setContentsMargins(10, 6, 10, 6)
+
+        lay.addWidget(QLabel("\U0001F4F9  Video Source:"))
+        self.cmb_video = QComboBox()
+        self.cmb_video.setMinimumWidth(170)
+        self.cmb_video.addItem("None (Black)", -1)
+        for i in range(4):
+            self.cmb_video.addItem(f"Device {i}", i)
+        lay.addWidget(self.cmb_video)
+
+        self.btn_detect_video = QPushButton("\U0001F50D Detect")
+        self.btn_detect_video.clicked.connect(self._detect_video)
+        lay.addWidget(self.btn_detect_video)
+
+        self.btn_apply_video = QPushButton("Apply")
+        self.btn_apply_video.setObjectName("accent")
+        self.btn_apply_video.clicked.connect(self._apply_video)
+        lay.addWidget(self.btn_apply_video)
+
+        self.lbl_video_status = QLabel("Background: Black")
+        self.lbl_video_status.setObjectName("subtle")
+        lay.addWidget(self.lbl_video_status)
+
+        lay.addStretch()
+        self.lbl_video_res = QLabel("")
+        self.lbl_video_res.setObjectName("subtle")
+        lay.addWidget(self.lbl_video_res)
+        return bar
+
+    def _detect_video(self):
+        self.btn_detect_video.setEnabled(False)
+        self.lbl_video_status.setText("Detecting devices\u2026")
+        self.statusBar().showMessage("Probing video devices 0-5\u2026")
+        try:
+            devices = detect_devices(5)
+        except Exception as exc:
+            devices = []
+            self.statusBar().showMessage(f"Detect error: {exc}")
+        # Rebuild the combo with detected devices.
+        self.cmb_video.blockSignals(True)
+        self.cmb_video.clear()
+        self.cmb_video.addItem("None (Black)", -1)
+        if devices:
+            for d in devices:
+                self.cmb_video.addItem(
+                    f"Device {d['index']} ({d['width']}x{d['height']})", d["index"])
+            self.lbl_video_status.setText(
+                f"Found {len(devices)} device(s)")
+        else:
+            for i in range(4):
+                self.cmb_video.addItem(f"Device {i}", i)
+            self.lbl_video_status.setText("No devices detected")
+        self.cmb_video.blockSignals(False)
+        self.btn_detect_video.setEnabled(True)
+        self.statusBar().showMessage("Video detection complete")
+
+    def _apply_video(self):
+        index = self.cmb_video.currentData()
+        if index is None:
+            index = -1
+        if index is None or int(index) < 0:
+            self.overlay.set_video_source(None)
+            self.lbl_video_status.setText("Background: Black")
+            self.lbl_video_res.setText("")
+            self.statusBar().showMessage("Video background disabled (black)")
+            return
+        # Connect to the thread's status signal for feedback before starting.
+        self.overlay.set_video_source(int(index))
+        if self.overlay.video_thread is not None:
+            self.overlay.video_thread.status_changed.connect(self._on_video_status)
+        self.lbl_video_status.setText(f"Starting device {index}\u2026")
+        self.statusBar().showMessage(f"Video source set to device {index}")
+
+    def _on_video_status(self, opened: bool, message: str):
+        self.lbl_video_status.setText(message)
+        self.statusBar().showMessage(message)
+        if opened and "(" in message and ")" in message:
+            self.lbl_video_res.setText(message[message.find("("):])
+        if not opened:
+            self.lbl_video_res.setText("(fallback: black)")
 
     # ------------------------------------------------------------------
     # Shared state operations
@@ -130,5 +230,6 @@ class ControlWindow(QMainWindow):
     # ------------------------------------------------------------------
     def closeEvent(self, event):
         self.stop_serial()
+        self.overlay.stop_video()
         self.overlay.close()
         super().closeEvent(event)

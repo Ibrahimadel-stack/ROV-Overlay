@@ -13,7 +13,7 @@ call .venv\Scripts\activate.bat
 echo.
 echo === Installing dependencies ===
 python -m pip install --upgrade pip
-pip install PyQt6 pyserial pyinstaller pillow
+pip install PyQt6 pyserial pyinstaller pillow opencv-python
 
 echo.
 echo === Building the executable ===

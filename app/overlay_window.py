@@ -4,15 +4,20 @@ from __future__ import annotations
 from typing import Dict, List, Optional
 
 from PyQt6.QtCore import Qt, QTimer, QPoint
-from PyQt6.QtGui import QColor, QPainter, QAction, QGuiApplication
+from PyQt6.QtGui import QColor, QPainter, QAction, QGuiApplication, QImage
 from PyQt6.QtWidgets import QWidget, QMenu
 
 from .models import Field
 from . import render
+from .video_capture import VideoCaptureThread
 
 
 class OverlayWindow(QWidget):
-    """Borderless, pure-black window that renders every active field."""
+    """Borderless overlay window.
+
+    Background is the live SDI video feed when a capture device is selected,
+    otherwise a pure-black fill. Overlay fields are always painted on top.
+    """
 
     def __init__(self):
         super().__init__()
@@ -22,15 +27,21 @@ class OverlayWindow(QWidget):
         self._always_on_top = True
         self._drag_pos: Optional[QPoint] = None
 
+        # Video background state
+        self.video_thread: Optional[VideoCaptureThread] = None
+        self.current_frame: Optional[QImage] = None
+        self.video_device: Optional[int] = None
+        self.keep_aspect = False  # fill the whole window by default
+
         self.setWindowTitle("ROV Overlay Output")
         self._apply_flags()
         self.setAutoFillBackground(True)
         self.resize(*self._resolution)
 
-        # Refresh timer ~10 fps
+        # Repaint timer at ~25 fps (40 ms), independent of the capture speed.
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update)
-        self.timer.start(100)
+        self.timer.start(40)
 
     # ------------------------------------------------------------------
     def _apply_flags(self):
@@ -57,6 +68,51 @@ class OverlayWindow(QWidget):
     def set_serial_values(self, values: Dict[str, str]):
         self.serial_values = values
 
+    # ------------------------------------------------------------------
+    # Video background control
+    # ------------------------------------------------------------------
+    def set_video_source(self, device_index: Optional[int]):
+        """Start capturing from a device, or clear to a black background.
+
+        Pass None (or a negative index) to disable video and revert to black.
+        """
+        self.stop_video()
+        if device_index is None or device_index < 0:
+            self.video_device = None
+            self.current_frame = None
+            self.update()
+            return
+        self.video_device = device_index
+        self.video_thread = VideoCaptureThread(device_index)
+        self.video_thread.frame_ready.connect(self._on_frame)
+        self.video_thread.status_changed.connect(self._on_video_status)
+        self.video_thread.start()
+
+    def stop_video(self):
+        if self.video_thread is not None:
+            try:
+                self.video_thread.frame_ready.disconnect(self._on_frame)
+                self.video_thread.status_changed.disconnect(self._on_video_status)
+            except Exception:
+                pass
+            try:
+                self.video_thread.stop()
+            except Exception:
+                pass
+            self.video_thread = None
+        self.current_frame = None
+
+    def _on_frame(self, image):
+        # image is a QImage, or None on failure/disconnect -> black background
+        self.current_frame = image if isinstance(image, QImage) else None
+
+    def _on_video_status(self, opened: bool, message: str):
+        # Expose status via a Qt signal-free hook; ControlWindow may connect
+        # to the thread directly. Keep a simple attribute for diagnostics.
+        self._video_status = (opened, message)
+        if not opened:
+            self.current_frame = None
+
     def move_to_monitor(self, index: int):
         screens = QGuiApplication.screens()
         if 0 <= index < len(screens):
@@ -69,9 +125,24 @@ class OverlayWindow(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         painter.setRenderHint(QPainter.RenderHint.TextAntialiasing, True)
-        # Pure black background
-        painter.fillRect(self.rect(), QColor(0, 0, 0))
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
 
+        # Layer 1 (background): live video frame if available, else black.
+        painter.fillRect(self.rect(), QColor(0, 0, 0))
+        frame = self.current_frame
+        if frame is not None and not frame.isNull():
+            if self.keep_aspect:
+                scaled = frame.scaled(
+                    self.size(), Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation)
+                x = (self.width() - scaled.width()) // 2
+                y = (self.height() - scaled.height()) // 2
+                painter.drawImage(x, y, scaled)
+            else:
+                # Fill the whole window (IgnoreAspectRatio) for the pilot view.
+                painter.drawImage(self.rect(), frame)
+
+        # Layer 2 (foreground): overlay fields.
         # Scale design-space (resolution) to the current window size
         dw, dh = self._resolution
         sx = self.width() / dw if dw else 1
@@ -124,9 +195,23 @@ class OverlayWindow(QWidget):
         top_act.triggered.connect(lambda checked: self.set_always_on_top(checked))
         menu.addAction(top_act)
 
+        aspect_act = QAction("Keep Video Aspect Ratio", self)
+        aspect_act.setCheckable(True)
+        aspect_act.setChecked(self.keep_aspect)
+        aspect_act.triggered.connect(self._set_keep_aspect)
+        menu.addAction(aspect_act)
+
         menu.addSeparator()
         hide_act = QAction("Hide Overlay Window", self)
         hide_act.triggered.connect(self.hide)
         menu.addAction(hide_act)
 
         menu.exec(event.globalPos())
+
+    def _set_keep_aspect(self, on: bool):
+        self.keep_aspect = on
+        self.update()
+
+    def closeEvent(self, event):
+        self.stop_video()
+        super().closeEvent(event)

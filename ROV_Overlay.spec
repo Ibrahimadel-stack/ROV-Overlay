@@ -27,11 +27,12 @@ a = Analysis(
     hiddenimports=[
         'serial', 'serial.tools', 'serial.tools.list_ports',
         'PyQt6.QtCore', 'PyQt6.QtGui', 'PyQt6.QtWidgets',
+        'cv2', 'numpy',
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['tkinter', 'matplotlib', 'numpy', 'PySide6', 'PyQt5'],
+    excludes=['tkinter', 'matplotlib', 'PySide6', 'PyQt5'],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
