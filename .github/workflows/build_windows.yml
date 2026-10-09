@@ -1,0 +1,30 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyQt6 pyserial pyinstaller opencv-python pillow
+      - name: Build EXE
+        run: pyinstaller --clean --noconfirm ROV_Overlay.spec
+      - name: Package into ZIP
+        run: powershell Compress-Archive -Path dist/ROV_Overlay/* -DestinationPath ROV_Overlay_Windows.zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ROV_Overlay_Windows
+          path: ROV_Overlay_Windows.zip
+          retention-days: 30
