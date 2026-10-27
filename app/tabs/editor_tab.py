@@ -57,11 +57,45 @@ class EditorTab(QWidget):
         toolbar.addWidget(self.btn_show_output)
         left.addLayout(toolbar)
 
+        # Alignment toolbar row
+        align_bar = QHBoxLayout()
+        align_lbl = QLabel("Align:")
+        align_lbl.setObjectName("subtle")
+        align_bar.addWidget(align_lbl)
+        self.btn_align_left = QPushButton("\u2b05")
+        self.btn_align_right = QPushButton("\u27a1")
+        self.btn_align_top = QPushButton("\u2b06")
+        self.btn_align_bottom = QPushButton("\u2b07")
+        self.btn_center_h = QPushButton("\u2194")
+        self.btn_center_v = QPushButton("\u2195")
+        self.btn_dist_h = QPushButton("\u290c")
+        self.btn_dist_v = QPushButton("\u290d")
+        _align_tips = {
+            self.btn_align_left: "Align Left edges",
+            self.btn_align_right: "Align Right edges",
+            self.btn_align_top: "Align Top edges",
+            self.btn_align_bottom: "Align Bottom edges",
+            self.btn_center_h: "Center Horizontally (canvas)",
+            self.btn_center_v: "Center Vertically (canvas)",
+            self.btn_dist_h: "Distribute Horizontally",
+            self.btn_dist_v: "Distribute Vertically",
+        }
+        for b, tip in _align_tips.items():
+            b.setToolTip(tip)
+            b.setFixedWidth(40)
+            align_bar.addWidget(b)
+        align_bar.addSpacing(16)
+        self.chk_snap_grid = QCheckBox("Snap to 5px grid")
+        align_bar.addWidget(self.chk_snap_grid)
+        align_bar.addStretch()
+        left.addLayout(align_bar)
+
         self.canvas = EditorCanvas()
         self.canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         left.addWidget(self.canvas, 1)
 
-        hint = QLabel("Click a field to select \u2022 drag to reposition \u2022 edit properties on the right")
+        hint = QLabel("Click to select \u2022 Shift+Click multi-select \u2022 drag to move \u2022 "
+                      "drag handles to resize \u2022 red lines = alignment snap")
         hint.setObjectName("subtle")
         left.addWidget(hint)
 
@@ -87,6 +121,18 @@ class EditorTab(QWidget):
 
         self.canvas.field_selected.connect(self._on_select)
         self.canvas.field_moved.connect(self._on_moved)
+        self.canvas.field_changed.connect(self._on_canvas_changed)
+
+        # Alignment buttons -> canvas operations
+        self.btn_align_left.clicked.connect(self.canvas.align_left)
+        self.btn_align_right.clicked.connect(self.canvas.align_right)
+        self.btn_align_top.clicked.connect(self.canvas.align_top)
+        self.btn_align_bottom.clicked.connect(self.canvas.align_bottom)
+        self.btn_center_h.clicked.connect(self.canvas.center_horizontal)
+        self.btn_center_v.clicked.connect(self.canvas.center_vertical)
+        self.btn_dist_h.clicked.connect(self.canvas.distribute_h)
+        self.btn_dist_v.clicked.connect(self.canvas.distribute_v)
+        self.chk_snap_grid.toggled.connect(self.canvas.set_snap_to_grid)
 
         self._set_enabled(False)
 
@@ -285,23 +331,34 @@ class EditorTab(QWidget):
             self._apply()
 
     def _delete_selected(self):
-        f = self.canvas.selected
-        if f and f in self.profile.fields:
-            self.profile.fields.remove(f)
-            self.canvas.select_field(None)
-            self.main.on_fields_changed()
+        targets = list(self.canvas.selected_fields)
+        if not targets:
+            return
+        for f in targets:
+            if f in self.profile.fields:
+                self.profile.fields.remove(f)
+        self.canvas.select_field(None)
+        self.main.on_fields_changed()
 
     # ------------------------------------------------------------------
     def _on_select(self, f: Optional[Field]):
         self._load_field(f)
 
     def _on_moved(self, f: Field):
-        if f is self._current():
+        if f is self._current() and f is not None:
             self._loading = True
             self.in_x.setValue(int(f.x))
             self.in_y.setValue(int(f.y))
+            self.in_img_w.setValue(int(f.width))
+            self.in_img_h.setValue(int(f.height))
+            self.in_font_size.setValue(int(f.font_size))
             self._loading = False
         self.main.sync_overlay()
+
+    def _on_canvas_changed(self):
+        """Canvas finished a drag/resize or ran an alignment op."""
+        self._load_field(self.canvas.selected)
+        self.main.on_fields_changed()
 
     _current_field: Optional[Field] = None
 
